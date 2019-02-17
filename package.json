@@ -1,0 +1,15 @@
+{
+  "name": "imageoptimizer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "imageOptimizer.js",
+  "scripts": {
+    "test": "node imageOptimizer"
+  },
+  "author": "JungHyunKwon",
+  "license": "ISC",
+  "dependencies": {
+    "mozjpeg": "^6.0.1",
+    "optipng-bin": "^5.1.0"
+  }
+}
