@@ -7,6 +7,7 @@
 'use strict';
 
 const fs = require('fs'),
+	  path = require('path'),
 	  {execFile} = require('child_process'),
 	  optipng = require('optipng-bin'), // {@link https://github.com/imagemin/optipng-bin}
 	  mozjpeg = require('mozjpeg'), // {@link https://github.com/imagemin/mozjpeg-bin}
@@ -70,8 +71,7 @@ fs.readdir(baseDirectory, (err, directories) => {
 											if(filesLength > filesIndex) {
 												let file = files[filesIndex],
 													fileDirectory = directory + '/' + file,
-													fileSplit = file.split('.'),
-													fileExtensions = fileSplit[fileSplit.length - 1],
+													fileExtension = path.extname(file),
 													nextFilesIndex = filesIndex + 1,
 													saveDirectory = distDirectory + '/' + file;
 												
@@ -79,8 +79,8 @@ fs.readdir(baseDirectory, (err, directories) => {
 													//오류가 있을 때
 													if(err) {
 														//문자일 때
-														if(typeof fileExtensions === 'string') {
-															fileExtensions = fileExtensions.toLowerCase();
+														if(typeof fileExtension === 'string') {
+															fileExtension = fileExtension.toLowerCase();
 														}
 
 														fs.stat(fileDirectory, (err, stats) => {
@@ -104,11 +104,11 @@ fs.readdir(baseDirectory, (err, directories) => {
 																}];
 
 																//jpeg 또는 jpg일 때
-																if(fileExtensions === 'jpeg' || fileExtensions === 'jpg') {
+																if(fileExtension === '.jpeg' || fileExtension === '.jpg') {
 																	execFile.apply(null, imageOptimizerOptions);
 
 																//gif 또는 png일 때
-																}else if(fileExtensions === 'gif' || fileExtensions === 'png') {
+																}else if(fileExtension === '.gif' || fileExtension === '.png') {
 																	imageOptimizerOptions[0] = optipng;
 																	imageOptimizerOptions[1][0] = '-out';
 
