@@ -20,12 +20,12 @@ fs.readdir(baseDirectory, (err, directories) => {
 	}else{
 		let directoriesLength = directories.length;
 
-		(function loopDirectories(directoriesIndex) {
+		(function loopDirectories(index) {
 			//조회된 파일, 폴더 개수만큼 반복
-			if(directoriesLength > directoriesIndex) {
-				let directory = directories[directoriesIndex],
+			if(directoriesLength > index) {
+				let directory = directories[index],
 					directoryName = directory,
-					nextDirectoriesIndex = directoriesIndex + 1;
+					nextIndex = index + 1;
 				
 				//기본 디렉토리와 폴더명과 합성(./images/#)
 				directory = baseDirectory + '/' + directoryName;
@@ -35,7 +35,7 @@ fs.readdir(baseDirectory, (err, directories) => {
 					if(err) {
 						console.error(directory + '를 조회 할 수 없습니다.');
 						
-						loopDirectories(nextDirectoriesIndex);
+						loopDirectories(nextIndex);
 
 					//폴더일 때
 					}else if(stats.isDirectory()) {
@@ -44,7 +44,7 @@ fs.readdir(baseDirectory, (err, directories) => {
 							if(err) {
 								console.error(directory + ' 목록을 읽을 수 없습니다.');
 								
-								loopDirectories(nextDirectoriesIndex);
+								loopDirectories(nextIndex);
 							}else{
 								let distDirectory = directory + '/dist';
 								
@@ -56,9 +56,9 @@ fs.readdir(baseDirectory, (err, directories) => {
 											if(err) {
 												console.error(distDirectory + '에 폴더를 생성하지 못했습니다.');
 
-												loopDirectories(nextDirectoriesIndex);
+												loopDirectories(nextIndex);
 											}else{
-												loopDirectories(directoriesIndex);
+												loopDirectories(index);
 											}
 										});
 
@@ -66,13 +66,13 @@ fs.readdir(baseDirectory, (err, directories) => {
 									}else if(stats.isDirectory()) {
 										let filesLength = files.length;
 
-										(function loopFiles(filesIndex) {
+										(function loopFiles(index) {
 											//파일 개수만큼 반복
-											if(filesLength > filesIndex) {
-												let file = files[filesIndex],
+											if(filesLength > index) {
+												let file = files[index],
 													fileDirectory = directory + '/' + file,
 													fileExtension = path.extname(file),
-													nextFilesIndex = filesIndex + 1,
+													nextIndex = index + 1,
 													saveDirectory = distDirectory + '/' + file;
 												
 												fs.unlink(saveDirectory, (err) => {
@@ -88,7 +88,7 @@ fs.readdir(baseDirectory, (err, directories) => {
 															if(err) {
 																console.error(fileDirectory + '를 조회 할 수 없습니다.');
 																
-																loopFiles(nextFilesIndex);
+																loopFiles(nextIndex);
 
 															//이미지 파일의 확장자를 가진 파일일 때
 															}else if(stats.isFile()) {
@@ -100,7 +100,7 @@ fs.readdir(baseDirectory, (err, directories) => {
 																		console.log(fileDirectory + ' 이미지를 최적화 하였습니다.');
 																	}
 
-																	loopFiles(nextFilesIndex);
+																	loopFiles(nextIndex);
 																}];
 
 																//jpeg 또는 jpg일 때
@@ -114,24 +114,24 @@ fs.readdir(baseDirectory, (err, directories) => {
 
 																	execFile.apply(null, imageOptimizerOptions);
 																}else{
-																	loopFiles(nextFilesIndex);
+																	loopFiles(nextIndex);
 																}
 															}else{
-																loopFiles(nextFilesIndex);
+																loopFiles(nextIndex);
 															}
 														});
 													}else{
-														loopFiles(filesIndex);
+														loopFiles(index);
 													}
 												});
 											}else{
-												loopDirectories(nextDirectoriesIndex);
+												loopDirectories(nextIndex);
 											}
 										})(0);
 									}else{
 										console.error(distDirectory + '가 폴더가 아닙니다.');
 
-										loopDirectories(nextDirectoriesIndex);
+										loopDirectories(nextIndex);
 									}
 								});
 							}
@@ -139,7 +139,7 @@ fs.readdir(baseDirectory, (err, directories) => {
 					}else{
 						console.error(directory + '가 폴더가 아닙니다.');
 
-						loopDirectories(nextDirectoriesIndex);
+						loopDirectories(nextIndex);
 					}
 				});
 			}else{
