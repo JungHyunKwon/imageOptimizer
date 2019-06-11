@@ -20,12 +20,12 @@ fs.readdir(baseDirectory, (err, directories) => {
 	}else{
 		let directoriesLength = directories.length;
 
-		(function loopDirectories(index) {
+		(function loopDirectories(directoriesIndex) {
 			//조회된 파일, 폴더 개수만큼 반복
-			if(directoriesLength > index) {
-				let directory = directories[index],
+			if(directoriesLength > directoriesIndex) {
+				let directory = directories[directoriesIndex],
 					directoryName = directory,
-					nextIndex = index + 1;
+					nextDirectoriesIndex = directoriesIndex + 1;
 				
 				//기본 디렉토리와 폴더명과 합성(./images/#)
 				directory = baseDirectory + '/' + directoryName;
@@ -35,7 +35,7 @@ fs.readdir(baseDirectory, (err, directories) => {
 					if(err) {
 						console.error(directory + '를 조회 할 수 없습니다.');
 						
-						loopDirectories(nextIndex);
+						loopDirectories(nextDirectoriesIndex);
 
 					//폴더일 때
 					}else if(stats.isDirectory()) {
@@ -44,21 +44,21 @@ fs.readdir(baseDirectory, (err, directories) => {
 							if(err) {
 								console.error(directory + ' 목록을 읽을 수 없습니다.');
 								
-								loopDirectories(nextIndex);
+								loopDirectories(nextDirectoriesIndex);
 							}else{
 								let distDirectory = directory + '/dist';
 								
 								fs.stat(distDirectory, (err, stats) => {
 									//오류가 있을 때
 									if(err) {
-										fs.mkdir(distDirectory, (err) => {
+										fs.mkdir(distDirectory, err => {
 											//오류가 있을 때
 											if(err) {
 												console.error(distDirectory + '에 폴더를 생성하지 못했습니다.');
 
-												loopDirectories(nextIndex);
+												loopDirectories(nextDirectoriesIndex);
 											}else{
-												loopDirectories(index);
+												loopDirectories(directoriesIndex);
 											}
 										});
 
@@ -66,21 +66,21 @@ fs.readdir(baseDirectory, (err, directories) => {
 									}else if(stats.isDirectory()) {
 										let filesLength = files.length;
 
-										(function loopFiles(index) {
+										(function loopFiles(filesIndex) {
 											//파일 개수만큼 반복
-											if(filesLength > index) {
-												let file = files[index],
+											if(filesLength > filesIndex) {
+												let file = files[filesIndex],
 													fileDirectory = directory + '/' + file,
-													fileExtension = path.extname(file),
-													nextIndex = index + 1,
+													fileExtensions = path.extname(file),
+													nextFilesIndex = filesIndex + 1,
 													saveDirectory = distDirectory + '/' + file;
 												
-												fs.unlink(saveDirectory, (err) => {
+												fs.unlink(saveDirectory, err => {
 													//오류가 있을 때
 													if(err) {
 														//문자일 때
-														if(typeof fileExtension === 'string') {
-															fileExtension = fileExtension.toLowerCase();
+														if(typeof fileExtensions === 'string') {
+															fileExtensions = fileExtensions.toLowerCase();
 														}
 
 														fs.stat(fileDirectory, (err, stats) => {
@@ -88,11 +88,11 @@ fs.readdir(baseDirectory, (err, directories) => {
 															if(err) {
 																console.error(fileDirectory + '를 조회 할 수 없습니다.');
 																
-																loopFiles(nextIndex);
+																loopFiles(nextFilesIndex);
 
 															//이미지 파일의 확장자를 가진 파일일 때
 															}else if(stats.isFile()) {
-																let imageOptimizerOptions = [mozjpeg, ['-outfile', saveDirectory, fileDirectory], (err) => {
+																let imageOptimizerOptions = [mozjpeg, ['-outfile', saveDirectory, fileDirectory], err => {
 																	//오류가 있을 때
 																	if(err) {
 																		console.error(fileDirectory + ' 이미지를 최적화 하지 못했습니다.');
@@ -100,38 +100,38 @@ fs.readdir(baseDirectory, (err, directories) => {
 																		console.log(fileDirectory + ' 이미지를 최적화 하였습니다.');
 																	}
 
-																	loopFiles(nextIndex);
+																	loopFiles(nextFilesIndex);
 																}];
 
 																//jpeg 또는 jpg일 때
-																if(fileExtension === '.jpeg' || fileExtension === '.jpg') {
+																if(fileExtensions === '.jpeg' || fileExtensions === '.jpg') {
 																	execFile.apply(null, imageOptimizerOptions);
 
 																//gif 또는 png일 때
-																}else if(fileExtension === '.gif' || fileExtension === '.png') {
+																}else if(fileExtensions === '.gif' || fileExtensions === '.png') {
 																	imageOptimizerOptions[0] = optipng;
 																	imageOptimizerOptions[1][0] = '-out';
 
 																	execFile.apply(null, imageOptimizerOptions);
 																}else{
-																	loopFiles(nextIndex);
+																	loopFiles(nextFilesIndex);
 																}
 															}else{
-																loopFiles(nextIndex);
+																loopFiles(nextFilesIndex);
 															}
 														});
 													}else{
-														loopFiles(index);
+														loopFiles(filesIndex);
 													}
 												});
 											}else{
-												loopDirectories(nextIndex);
+												loopDirectories(nextDirectoriesIndex);
 											}
 										})(0);
 									}else{
 										console.error(distDirectory + '가 폴더가 아닙니다.');
 
-										loopDirectories(nextIndex);
+										loopDirectories(nextDirectoriesIndex);
 									}
 								});
 							}
@@ -139,7 +139,7 @@ fs.readdir(baseDirectory, (err, directories) => {
 					}else{
 						console.error(directory + '가 폴더가 아닙니다.');
 
-						loopDirectories(nextIndex);
+						loopDirectories(nextDirectoriesIndex);
 					}
 				});
 			}else{
