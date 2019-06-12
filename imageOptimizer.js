@@ -72,7 +72,7 @@ fs.readdir(baseDirectory, (err, directories) => {
 											if(filesLength > filesIndex) {
 												let file = files[filesIndex],
 													fileDirectory = directory + '/' + file,
-													fileExtensions = path.extname(file),
+													fileExtensions = path.extname(file).toLowerCase(),
 													saveDirectory = distDirectory + '/' + file;
 												
 												fs.unlink(saveDirectory, err => {
