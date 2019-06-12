@@ -24,13 +24,14 @@ fs.readdir(baseDirectory, (err, directories) => {
 			//조회된 파일, 폴더 개수만큼 반복
 			if(directoriesLength > directoriesIndex) {
 				let directory = directories[directoriesIndex],
-					directoryName = directory,
-					nextDirectoriesIndex = directoriesIndex + 1;
+					directoryName = directory;
 				
 				//기본 디렉토리와 폴더명과 합성(./images/#)
 				directory = baseDirectory + '/' + directoryName;
 
 				fs.stat(directory, (err, stats) => {
+					let nextDirectoriesIndex = directoriesIndex + 1;
+
 					//오류가 있을 때
 					if(err) {
 						console.error(directory + '를 조회 할 수 없습니다.');
@@ -72,12 +73,13 @@ fs.readdir(baseDirectory, (err, directories) => {
 												let file = files[filesIndex],
 													fileDirectory = directory + '/' + file,
 													fileExtensions = path.extname(file),
-													nextFilesIndex = filesIndex + 1,
 													saveDirectory = distDirectory + '/' + file;
 												
 												fs.unlink(saveDirectory, err => {
 													//오류가 있을 때
 													if(err) {
+														let nextFilesIndex = filesIndex + 1;
+
 														//문자일 때
 														if(typeof fileExtensions === 'string') {
 															fileExtensions = fileExtensions.toLowerCase();
