@@ -71,10 +71,11 @@ fs.readdir(baseDirectory, (err, directories) => {
 											//파일 개수만큼 반복
 											if(filesLength > filesIndex) {
 												let file = files[filesIndex],
-													fileDirectory = directory + '/' + file,
 													fileExtensions = path.extname(file).toLowerCase(),
 													saveDirectory = distDirectory + '/' + file;
 												
+												file = directory + '/' + file;
+
 												fs.unlink(saveDirectory, err => {
 													//오류가 있을 때
 													if(err) {
@@ -85,21 +86,21 @@ fs.readdir(baseDirectory, (err, directories) => {
 															fileExtensions = fileExtensions.toLowerCase();
 														}
 
-														fs.stat(fileDirectory, (err, stats) => {
+														fs.stat(file, (err, stats) => {
 															//오류가 있을 때
 															if(err) {
-																console.error(fileDirectory + '를 조회 할 수 없습니다.');
+																console.error(file + '를 조회 할 수 없습니다.');
 																
 																loopFiles(nextFilesIndex);
 
 															//이미지 파일의 확장자를 가진 파일일 때
 															}else if(stats.isFile()) {
-																let imageOptimizerOptions = [mozjpeg, ['-outfile', saveDirectory, fileDirectory], err => {
+																let imageOptimizerOptions = [mozjpeg, ['-outfile', saveDirectory, file], err => {
 																	//오류가 있을 때
 																	if(err) {
-																		console.error(fileDirectory + ' 이미지를 최적화 하지 못했습니다.');
+																		console.error(file + ' 이미지를 최적화 하지 못했습니다.');
 																	}else{
-																		console.log(fileDirectory + ' 이미지를 최적화 하였습니다.');
+																		console.log(file + ' 이미지를 최적화 하였습니다.');
 																	}
 
 																	loopFiles(nextFilesIndex);
