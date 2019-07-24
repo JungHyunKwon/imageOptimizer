@@ -52,7 +52,9 @@ fs.readdir(baseDirectory, (err, directories) => {
 								fs.stat(distDirectory, (err, stats) => {
 									//오류가 있을 때
 									if(err) {
-										fs.mkdir(distDirectory, err => {
+										fs.mkdir(distDirectory, {
+											recursive : true
+										}, err => {
 											//오류가 있을 때
 											if(err) {
 												console.error(distDirectory + '에 폴더를 생성하지 못했습니다.');
