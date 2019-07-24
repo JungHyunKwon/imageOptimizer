@@ -81,11 +81,6 @@ fs.readdir(baseDirectory, (err, directories) => {
 													if(err) {
 														let nextFilesIndex = filesIndex + 1;
 
-														//문자일 때
-														if(typeof fileExtensions === 'string') {
-															fileExtensions = fileExtensions.toLowerCase();
-														}
-
 														fs.stat(file, (err, stats) => {
 															//오류가 있을 때
 															if(err) {
