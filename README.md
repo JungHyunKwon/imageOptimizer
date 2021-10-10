@@ -4,7 +4,7 @@ NodeJS로 만들었으며 이미지 최적화를 도와주는 도구입니다.
 ## imagemin
 - <https://github.com/imagemin/optipng-bin>
 - <https://github.com/imagemin/mozjpeg-bin>
-[go](http://stackoverflow.com){:target="_blank"}.
+<a href="http://example.com/" target="_blank">example</a>
 ## CLI
 ````javascript
 node imageOptimizer
